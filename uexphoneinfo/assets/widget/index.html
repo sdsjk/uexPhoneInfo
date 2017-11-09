@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <script type="text/javascript">
+
+
+    function initSDK(){
+        var param = {
+         "links": [
+        {
+            "num": "185114606331",
+            "name": "张三",
+            "positioninfo": "航天局局长",
+            "messageinfo": "公司本部—信息中心-系统运营",
+            "companyinfo": "北京重工业集团有限公司"
+        },
+        {
+            "num": "185114606332",
+            "name": "李四",
+            "positioninfo": "航天局局长",
+            "messageinfo": "公司本部—信息中心-系统运营",
+            "companyinfo": "北京重工业集团有限公司"
+        },
+        {
+            "num": "18511460633",
+            "name": "王五",
+            "positioninfo": "航天局局长",
+            "messageinfo": "公司本部—信息中心-系统运营",
+            "companyinfo": "北京重工业集团有限公司"
+        }
+    ]
+}
+            uexCallKit.initPhoneData(JSON.stringify(param));
+    }
+
+
+    function Jump(){
+        window.print();
+
+    }
+
+</script>
+</head>
+
+<body>
+    <div class="tit">uexDemo对象</div>
+        <div class="conbor">
+            <div class="consj">
+                <span >初始化接口</span>
+                <input class="btn" type="button" value="initSDK"
+                       onclick="initSDK()"><br>
+
+            </div>
+            <div class="consj">
+                <span >调试</span>
+                <input class="btn" type="button" value="调试"
+                       onclick="Jump()"><br>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

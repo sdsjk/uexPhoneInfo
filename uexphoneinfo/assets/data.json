@@ -1,0 +1,18 @@
+[
+  {
+    "name": "云适配OA",
+    "url": "http://oa.yunshipei.com/OAapp/WebObjects/OAapp.woa"
+  },
+  {
+    "name": "中国电建",
+    "url": "http://220.197.207.187:8082/Portal/Sys/Anonymouse/Login.aspx?ReturnUrl=%2fPortal%2fdefault.aspx"
+  },
+  {
+    "name": "文档不落地",
+    "url": "http://app.yunshipei.com/download/wordlook.html?_ysp_forcepc=1"
+  },
+  {
+    "name": "云适配案例库",
+    "url": "http://cases.yunshipei.info"
+  }
+]

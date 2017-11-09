@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uexplugins>
+    <plugin
+        uexName="uexCallKit" version="4.0.2" build="2">
+        <info>修改最后一个不显示和弹出多个悬浮框4.02</info>
+        <info>显示电话信息插件4.01</info>
+    </plugin>
+
+</uexplugins>
