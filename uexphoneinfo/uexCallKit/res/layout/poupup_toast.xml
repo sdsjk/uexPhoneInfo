@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/popup_window_bg"
+    android:gravity="center"
+    >
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1px"
+        android:background="#888" />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:gravity="center"
+    android:padding="16dp"
+    android:textSize="16sp"
+    android:text="需要获取悬浮框权限来开启来电显示功能,是否进行设置?"
+    />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1px"
+        android:background="#888" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/popupwindow_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="取消"
+            android:gravity="center"
+            android:layout_weight="1"
+            />
+        <View
+            android:layout_width="0.1dp"
+            android:layout_height="match_parent"
+            android:background="#888"
+            ></View>
+        <TextView
+            android:id="@+id/popupwindow_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="设置"
+            />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1px"
+        android:background="#888" />
+</LinearLayout>
