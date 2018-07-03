@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexCallKit" version="4.0.4" build="4">
-        <info> 4.0.4:修改来电显示，数据过多出现的问题,新增开启权限对话框;修改个别机型悬浮框突然消失问题</info>
+        uexName="uexCallKit" version="4.0.5" build="5">
+        <info> 4.0.5:修改检测到未知来电不显示，来电提示框，和去掉权限判断的提示框</info>
+        <build> 4.0.4:修改来电显示，数据过多出现的问题,新增开启权限对话框;修改个别机型悬浮框突然消失问题</build>
         <build>修改最后一个不显示和弹出多个悬浮框4.02</build>
         <build>显示电话信息插件4.01</build>
     </plugin>

@@ -4,5 +4,6 @@
         className="com.cloud.adapter.cloud_adaptation.EUEXPhoneInfo" uexName="uexCallKit" >
         <method name = "initPhoneData" />
         <method name = "checkDataCache" />
+        <method name = "openPermissionDialog" />
     </plugin>
 </uexplugins>
