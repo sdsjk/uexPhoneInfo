@@ -55,7 +55,7 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                 case 2:
                     PhoneInfo.LinksBean linksBean = (PhoneInfo.LinksBean) msg.obj;
 //                    Log.e("TAG", "=======================数据查找成功"+linksBean.toString());
-                    if(!linksBean.getCompanyinfo().equals("未知")){
+                    if (!linksBean.getCompanyinfo().equals("未知")) {
                         showPhoneWindow(linksBean);
                     }
 
@@ -206,12 +206,12 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
 
     /**
      * 显示开启权限对话框
+     *
      * @param param
      */
-    public  void openPermissionDialog(String[] param){
+    public void openPermissionDialog(String[] param) {
         showToastDialog();
     }
-
 
 
     //显示提示框
@@ -379,7 +379,9 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                                 for (int i = 0; i < len; i++) {
                                     PhoneInfo.LinksBean linksBean = phoneInfo.getLinks().get(i);
                                     String num = linksBean.getNum();
-                                    if (incomingNumber.equals(num)) {
+                                    String officePhone=linksBean.getOfficePhone();
+                                    String field4=linksBean.getField3();
+                                    if (incomingNumber.equals(num)||incomingNumber.equals(officePhone)||incomingNumber.equals(field4)) {
                                         Message message = Message.obtain();
                                         message.what = 2;
                                         message.obj = linksBean;

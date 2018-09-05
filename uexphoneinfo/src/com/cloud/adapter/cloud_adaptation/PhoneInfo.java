@@ -33,6 +33,24 @@ public class PhoneInfo {
         private String positioninfo;
         private String messageinfo;
         private String companyinfo;
+        private String officePhone;
+        private String field3;
+
+        public String getOfficePhone() {
+            return officePhone;
+        }
+
+        public void setOfficePhone(String officePhone) {
+            this.officePhone = officePhone;
+        }
+
+        public String getField3() {
+            return field3;
+        }
+
+        public void setField3(String field3) {
+            this.field3 = field3;
+        }
 
         public String getNum() {
             return num;
