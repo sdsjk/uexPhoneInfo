@@ -11,10 +11,15 @@
 ## 2.1、 方法
 
 > ### openCallKit 初始化插件接口
+
 `uexCallKit.initPhoneData(JSON.stringify(param));`
+
 **说明:**
+
 初始化uexCallKit插件
+
 **参数:**
+
 | 参数名称 | 参数类型 | 是否必须 | 说明 |
 | ------ | ----- | ----- | ------|
 | param | String | 是| 该字符串为JSON 格式，参见下方param 列表|
@@ -33,9 +38,11 @@
 |field3|是|String|短号|(IOS此参数无效)
 
 **平台支持:**
+
 Android
 
 **版本支持:**
+
 4.0.0+
 
 **示例:**
@@ -80,10 +87,15 @@ Android
 
 
 > ### checkDataCache 检查是否有缓存数据和悬浮框权限
+
 `uexCallKit.checkDataCache(FunctionId);`
+
 **说明:**
+
 检查是否有缓存数据和悬浮框权限
+
 **参数:**
+
 | 参数名称 | 参数类型 | 是否必须 | 说明 |
 | ------ | ----- | ----- | ------|
 | FunctionId | function  | 是| 传入的js回调方法|
@@ -95,10 +107,14 @@ Android
 | ----- | ------- | ------ | ------ |
 |isData|是|boolean|是否有缓存数据|
 |isPermission|是|boolean|是否开启悬浮框权限|
+
 **平台支持:**
+
 Android
 
+
 **版本支持:**
+
 4.0.0+
 
 **示例:**
@@ -117,15 +133,22 @@ Android
 ```
 
 > ### openPermissionDialog 打开系统的悬浮框权限
+
 `uexCallKit.openPermissionDialog();`
+
 **说明:**
+
 打开系统悬浮框设置界面去开启悬浮框权限
+
 **参数:**
+
 无
 **平台支持:**
+
 Android
 
 **版本支持:**
+
 4.0.0+
 
 **示例:**

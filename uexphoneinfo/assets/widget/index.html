@@ -12,49 +12,50 @@
 	"status": "ok",
 	"datas": {
 		"links": [{
-				"num": "13957881266",
-				"name": "许明忠",
+				"num": "13269479405",
+				"name": "徐露雪",
 				"positioninfo": "总经理",
 				"messageinfo": "总经理室",
 				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"1212",
-				"field3":""
+				"officePhone":"123456",
+				"field3":"1234"
 			},
 			{
-				"num": "13967899181",
-				"name": "钟燕波",
+				"num": "15321375192",
+				"name": "张一博",
 				"positioninfo": "科长",
 				"messageinfo": "卷包车间",
 				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"1212",
-				"field3":""
+				"officePhone":"654321",
+				"field3":"6543"
 			},
 			{
-				"num": "13957899676",
+				"num": "13022675245",
 				"name": "邬莉萍",
 				"positioninfo": "科长",
 				"messageinfo": "卷包车间",
 				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"1212",
-				"field3":""
+				"officePhone":"7777",
+				"field3":"6666"
 			},
 			{
-				"num": "",
+				"num": "18810094832",
 				"name": "钱芸",
 				"positioninfo": "科长",
 				"messageinfo": "卷包车间",
 				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"1212",
-				"field3":""
+				"officePhone":"888",
+				"field3":"99999"
 			}
 		]
 	}
 };
 
 
+	 uexCallKit.initPhoneData(JSON.stringify(param));
+	}
     function initSDK(){
-
-                uexCallKit.initPhoneData(JSON.stringify(param.datas));
+    uexCallKit.initPhoneData(JSON.stringify(param.datas));
     }
 
 
@@ -62,11 +63,15 @@
         uexCallKit.checkDataCache(function(isData,isPermission){
         alert(isData+"==========权限"+isPermission);
         if(!isPermission){
-        uexCallKit.openPermissionDialog();
+            uexCallKit.openPermissionDialog();
 
         }
         });
     }
+
+
+
+
 
 
     </script>
