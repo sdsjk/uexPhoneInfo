@@ -15,7 +15,6 @@ import android.os.Message;
 import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +30,8 @@ import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 
+import java.util.List;
+
 /**
  * Created by zhang on 2017/9/19.
  */
@@ -43,29 +44,47 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
     public static PhoneInfo phoneInfo = new PhoneInfo();
     public static SharedPreferences sharedPreferences = null;
     public int functionId = -1;
+    /**
+     * 跳转权限申请requestCode
+     */
+    private int REQUESTOVERLAYSPERMISSIONCODE = 1;
+    /**
+     * 初始化数据成功标记
+     */
+    public static final int INITDATASUCESS = 1;
+    /**
+     * 拨出电话和打出电话查找数据标记
+     */
+    public static final int QUERYSHOWDATASUCESS = 2;
+
+    /**
+     * Runing状态表示可以在子线成中，获取数据
+     * Busy状态表示子线成正在执行操作不能再去获取数据
+     */
+    public static enum PhoneStatus {
+        Running,
+        Busy
+    }
+
+    public static int PHONESTATUS = 0;
     public static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case 1:
-                    Log.e("TAG", "=======================初始化数据成功");
-                    //判断是否开启悬浮框权限
+                case INITDATASUCESS:
                     break;
-                case 2:
+                case QUERYSHOWDATASUCESS:
                     PhoneInfo.LinksBean linksBean = (PhoneInfo.LinksBean) msg.obj;
-//                    Log.e("TAG", "=======================数据查找成功"+linksBean.toString());
                     if (!linksBean.getCompanyinfo().equals("未知")) {
                         showPhoneWindow(linksBean);
                     }
-
                     flag = true;
                     break;
             }
-
         }
     };
-    private int requestOverlaysPermissionCode = 1;
+
 
     private static void showPhoneWindow(PhoneInfo.LinksBean linksBean) {
         String name = linksBean.getName();
@@ -95,9 +114,6 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
         params.y = 0;
         params.gravity = Gravity.CENTER;
         params.format = PixelFormat.RGBA_8888;
-//                        int layoutId = EUExUtil.getResLayoutID("phone_alert");
-//                        phoneView= LayoutInflater.from(EUExUtil.mContext).inflate(layoutId, null);
-//        Log.e("TAG", "phoneinf0==============="+phoneInfo);
         nameview = (TextView) phoneView.findViewById(EUExUtil.getResIdID("name"));
         positioninfoview = (TextView) phoneView.findViewById(EUExUtil.getResIdID("positioninfo"));
         messageinfoview = (TextView) phoneView.findViewById(EUExUtil.getResIdID("messageinfo"));
@@ -143,10 +159,7 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                 return true;
             }
         });
-        if (phoneView.getParent() != null) {
-//            Log.e("TAG", "========================phoneView不等同于空");
-        } else {
-//            Log.e("TAG", "========================phoneView等同于空");
+        if (phoneView.getParent() == null) {
             wm.addView(phoneView, params);
         }
     }
@@ -255,6 +268,11 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
         popupwindow_setting.setOnClickListener(this);
     }
 
+    /**
+     * 初始化通讯录并保存在本地的SP中
+     *
+     * @param parm
+     */
     public void initPhoneData(final String[] parm) {
         if (parm.length < 1) {
             return;
@@ -265,14 +283,11 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                 sharedPreferences = mContext.getSharedPreferences("phoneinfo", Context.MODE_PRIVATE);
                 sharedPreferences.edit().putString("userinfo", parm[0]).commit();
                 Message message = Message.obtain();
-                message.what = 1;
+                message.what = INITDATASUCESS;
                 message.obj = phoneInfo;
                 handler.sendMessage(message);
-
             }
         }.start();
-        //判断悬浮框权限
-//        callBackPluginJs("uexCallKit.checkPerssions",PhoneInfoUtils.getPermission()+"");
     }
 
     @Override
@@ -281,7 +296,7 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
             //确认跳转申请
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             intent.setData(Uri.parse("package:" + mContext.getPackageName()));
-            startActivityForResult(intent, requestOverlaysPermissionCode);
+            startActivityForResult(intent, REQUESTOVERLAYSPERMISSIONCODE);
         } else if (v.getId() == EUExUtil.getResIdID("popupwindow_cancle")) {
             setBackgroundAlpha(1.0f);
             popupWindow.dismiss();
@@ -291,7 +306,7 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == requestOverlaysPermissionCode) {
+        if (requestCode == REQUESTOVERLAYSPERMISSIONCODE) {
             if (PhoneInfoUtils.getPermission()) {
                 if (popupWindow != null) {
                     popupWindow.dismiss();
@@ -304,6 +319,12 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
 
     }
 
+    /**
+     * 广播Action Intent.ACTION_NEW_OUTGOING_CALL是拨出去电话的监听，除此就是来电监听
+     */
+
+    public static String phoneNum;
+
     public static class PhoneReceiver extends BroadcastReceiver {
 
         int layoutId = EUExUtil.getResLayoutID("phone_alert");
@@ -311,25 +332,61 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             mcontext = context;
-            if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
-                //如果是去电（拨出）
-                Log.e("TAG", "拨出");
-            } else {
-                //查了下android文档，貌似没有专门用于接收来电的action,所以，非去电即来电
-//                Log.e("TAG", "======================"+flag);
+
+            if (!intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
                 if (flag) {
-//                  Log.e("TAG", "=====================来电来电来电来电");
                     TelephonyManager tm = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
                     tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
                     flag = false;
                 }
-
+            } else {
+                phoneNum = getResultData();
             }
+        }
+
+        /**
+         * 根据来电或者去电的电话号码去内现或者SP中获取对应的数据
+         * 并传送给主线程的Handle去显示相应来电去点提示
+         *
+         * @param incomingNumber 电话号码
+         */
+        private void getPhoneInfoMessageAndHandleMain(final String incomingNumber) {
+            new Thread() {
+                public void run() {
+                    int len = 0;
+                    try {
+                        if (phoneInfo == null) {
+                            sharedPreferences = mcontext.getSharedPreferences("phoneinfo", Context.MODE_PRIVATE);
+                            String userinfo = sharedPreferences.getString("userinfo", "");
+                            phoneInfo = DataHelper.gson.fromJson(userinfo, PhoneInfo.class);
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    len = phoneInfo.getLinks().size();
+                    PhoneInfo.LinksBean linksBean;
+                    List<PhoneInfo.LinksBean> links = phoneInfo.getLinks();
+                    for (int i = 0; i < len; i++) {
+                        linksBean = links.get(i);
+                        String num = linksBean.getNum();
+                        String officePhone = linksBean.getOfficePhone();
+                        String field4 = linksBean.getField3();
+                        if (incomingNumber.equals(num) || incomingNumber.contains(officePhone) || incomingNumber.equals(field4)) {
+                            Message message = Message.obtain();
+                            message.what = QUERYSHOWDATASUCESS;
+                            message.obj = linksBean;
+                            handler.sendMessage(message);
+                            break;
+                        }
+                    }
+
+                }
+            }.start();
         }
 
 
         private PhoneStateListener listener = new PhoneStateListener() {
-
             @Override
             public void onCallStateChanged(int state, final String incomingNumber) {
                 //state 当前状态 incomingNumber,貌似没有去电的API
@@ -337,10 +394,9 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                 if (phoneView == null) {
                     phoneView = LayoutInflater.from(EUExUtil.mContext).inflate(layoutId, null);
                 }
-//                Log.e("TAG", "========================"+state);
                 switch (state) {
                     case TelephonyManager.CALL_STATE_IDLE:
-//                        Log.e("TAG", "===================CALL_STATE_IDLE======="+phoneView.getParent());
+                        PHONESTATUS = PhoneStatus.Running.ordinal();
                         flag = true;
                         if (phoneView.getParent() != null) {
                             wm.removeView(phoneView);
@@ -348,61 +404,22 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
 
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
-//                        Log.e("TAG", "===================CALL_STATE_OFFHOOK======="+phoneView.getParent());
                         flag = true;
-                        if (phoneView.getParent() != null) {
-                            wm.removeView(phoneView);
+                        if (PhoneStatus.Running.ordinal() == PHONESTATUS) {
+
+                            if ("".equals(incomingNumber.trim()) || null == incomingNumber) {
+                                PHONESTATUS = PhoneStatus.Busy.ordinal();
+                                getPhoneInfoMessageAndHandleMain(phoneNum);
+                            } else {
+                                PHONESTATUS = PhoneStatus.Busy.ordinal();
+                                getPhoneInfoMessageAndHandleMain(incomingNumber);
+                            }
                         }
+
                         break;
                     case TelephonyManager.CALL_STATE_RINGING:
 
-                        new Thread() {
-                            public void run() {
-                                int len = 0;
-                                try {
-                                    len = phoneInfo.getLinks().size();
-                                    if (len == 0) {
-                                        sharedPreferences = mcontext.getSharedPreferences("phoneinfo", Context.MODE_PRIVATE);
-                                        String userinfo = sharedPreferences.getString("userinfo", "");
-                                        phoneInfo = DataHelper.gson.fromJson(userinfo, PhoneInfo.class);
-                                        len = phoneInfo.getLinks().size();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Log.e("TAG", "缓存中获取数据");
-                                    sharedPreferences = mcontext.getSharedPreferences("phoneinfo", Context.MODE_PRIVATE);
-                                    String userinfo = sharedPreferences.getString("userinfo", "");
-                                    phoneInfo = DataHelper.gson.fromJson(userinfo, PhoneInfo.class);
-                                    len = phoneInfo.getLinks().size();
-//                                    Toast.makeText(mcontext,"没有初始化数据",Toast.LENGTH_LONG).show();
-                                }
-                                for (int i = 0; i < len; i++) {
-                                    PhoneInfo.LinksBean linksBean = phoneInfo.getLinks().get(i);
-                                    String num = linksBean.getNum();
-                                    String officePhone=linksBean.getOfficePhone();
-                                    String field4=linksBean.getField3();
-                                    if (incomingNumber.equals(num)||incomingNumber.equals(officePhone)||incomingNumber.equals(field4)) {
-                                        Message message = Message.obtain();
-                                        message.what = 2;
-                                        message.obj = linksBean;
-                                        handler.sendMessage(message);
-                                        break;
-                                    }
-                                    if (i == len - 1) {
-                                        Message message = Message.obtain();
-                                        message.what = 2;
-                                        linksBean.setCompanyinfo("未知");
-                                        linksBean.setNum(incomingNumber);
-                                        linksBean.setPositioninfo("未知");
-                                        linksBean.setName("未知");
-                                        linksBean.setMessageinfo("未知");
-                                        message.obj = linksBean;
-                                        handler.sendMessage(message);
-                                    }
-                                }
-                            }
-                        }.start();
-                        Log.e("TAG", "响铃:来电号码" + incomingNumber);
+                        getPhoneInfoMessageAndHandleMain(incomingNumber);
                         break;
                 }
             }

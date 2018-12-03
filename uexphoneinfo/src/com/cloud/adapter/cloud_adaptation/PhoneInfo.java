@@ -36,6 +36,16 @@ public class PhoneInfo {
         private String officePhone;
         private String field3;
 
+        public LinksBean(String num, String name, String positioninfo, String messageinfo, String companyinfo, String officePhone, String field3) {
+            this.num = num;
+            this.name = name;
+            this.positioninfo = positioninfo;
+            this.messageinfo = messageinfo;
+            this.companyinfo = companyinfo;
+            this.officePhone = officePhone;
+            this.field3 = field3;
+        }
+
         public String getOfficePhone() {
             return officePhone;
         }
