@@ -15,6 +15,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -73,6 +74,7 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
             super.handleMessage(msg);
             switch (msg.what) {
                 case INITDATASUCESS:
+                    Log.e("TAG", "============数据初始化成功");
                     break;
                 case QUERYSHOWDATASUCESS:
                     PhoneInfo.LinksBean linksBean = (PhoneInfo.LinksBean) msg.obj;
@@ -87,6 +89,7 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
 
 
     private static void showPhoneWindow(PhoneInfo.LinksBean linksBean) {
+
         String name = linksBean.getName();
         String positioninfo = linksBean.getPositioninfo();
         String messageinfo = linksBean.getMessageinfo();
@@ -98,14 +101,18 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
         }
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams();
         int type;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            type = WindowManager.LayoutParams.TYPE_PHONE;
+        if (Build.VERSION.SDK_INT >= 25) {
+            type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         } else {
             type = WindowManager.LayoutParams.TYPE_PHONE;
         }
         params.type = type;
         params.flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         params.gravity = Gravity.CENTER;
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -279,13 +286,20 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
         }
         new Thread() {
             public void run() {
-                phoneInfo = DataHelper.gson.fromJson(parm[0], PhoneInfo.class);
                 sharedPreferences = mContext.getSharedPreferences("phoneinfo", Context.MODE_PRIVATE);
+                if("".equals(sharedPreferences.getString("userinfo",""))||null==sharedPreferences.getString("userinfo","")){
+
+
+                phoneInfo = DataHelper.gson.fromJson(parm[0], PhoneInfo.class);
+
                 sharedPreferences.edit().putString("userinfo", parm[0]).commit();
                 Message message = Message.obtain();
                 message.what = INITDATASUCESS;
                 message.obj = phoneInfo;
                 handler.sendMessage(message);
+                }else {
+                    Log.e("TAG", "============数据已经初始化过了");
+                }
             }
         }.start();
     }
@@ -296,7 +310,10 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
             //确认跳转申请
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             intent.setData(Uri.parse("package:" + mContext.getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivityForResult(intent, REQUESTOVERLAYSPERMISSIONCODE);
+            setBackgroundAlpha(1.0f);
+            popupWindow.dismiss();
         } else if (v.getId() == EUExUtil.getResIdID("popupwindow_cancle")) {
             setBackgroundAlpha(1.0f);
             popupWindow.dismiss();
@@ -341,6 +358,8 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                 }
             } else {
                 phoneNum = getResultData();
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
+                tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
             }
         }
 
@@ -350,16 +369,15 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
          *
          * @param incomingNumber 电话号码
          */
-        private void getPhoneInfoMessageAndHandleMain(final String incomingNumber) {
+        private   void getPhoneInfoMessageAndHandleMain(final String incomingNumber) {
             new Thread() {
                 public void run() {
                     int len = 0;
                     try {
-                        if (phoneInfo == null) {
+                        if (phoneInfo== null||phoneInfo.getLinks()== null) {
                             sharedPreferences = mcontext.getSharedPreferences("phoneinfo", Context.MODE_PRIVATE);
                             String userinfo = sharedPreferences.getString("userinfo", "");
                             phoneInfo = DataHelper.gson.fromJson(userinfo, PhoneInfo.class);
-
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -372,13 +390,29 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
                         String num = linksBean.getNum();
                         String officePhone = linksBean.getOfficePhone();
                         String field4 = linksBean.getField3();
-                        if (incomingNumber.equals(num) || incomingNumber.contains(officePhone) || incomingNumber.equals(field4)) {
+
+                        if (incomingNumber.equals(num) ) {
                             Message message = Message.obtain();
                             message.what = QUERYSHOWDATASUCESS;
                             message.obj = linksBean;
                             handler.sendMessage(message);
                             break;
                         }
+                        if(officePhone!=""&&incomingNumber.contains(officePhone)){
+                            Message message = Message.obtain();
+                            message.what = QUERYSHOWDATASUCESS;
+                            message.obj = linksBean;
+                            handler.sendMessage(message);
+                            break;
+                        }
+                        if( field4!=""&&incomingNumber.equals(field4)){
+                            Message message = Message.obtain();
+                            message.what = QUERYSHOWDATASUCESS;
+                            message.obj = linksBean;
+                            handler.sendMessage(message);
+                            break;
+                        }
+
                     }
 
                 }
@@ -418,7 +452,6 @@ public class EUEXPhoneInfo extends EUExBase implements View.OnClickListener {
 
                         break;
                     case TelephonyManager.CALL_STATE_RINGING:
-
                         getPhoneInfoMessageAndHandleMain(incomingNumber);
                         break;
                 }

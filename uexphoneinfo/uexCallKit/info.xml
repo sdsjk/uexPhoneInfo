@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexCallKit" version="4.0.9" build="9">
-        <info> 4.0.9:修改来电显示短号匹配规则</info>
+        uexName="uexCallKit" version="4.0.13" build="13">
+        <info> 4.0.13:修改8.0以上来电显示提示不显示问题</info>
+        <build> 4.0.11:修改因为增加短号和办公室号码匹配规则导致的来电去电显示人员错乱</build>
+        <build> 4.0.11:修改提示开启悬浮框需要手动关闭问题</build>
+        <build> 4.0.10:修改在锁屏时候不不提示来电悬浮框</build>
+        <build> 4.0.9:修改来电显示短号匹配规则</build>
         <build> 4.0.8:修改第一次拨出去电话不显示问题</build>
         <build> 4.0.7:添加电话拨出后,查询通讯录并显示;修改部分代码结构</build>
         <build> 4.0.6:新增加2个字段座机号和短号6</build>
@@ -11,4 +15,6 @@
         <build>修改最后一个不显示和弹出多个悬浮框4.02</build>
         <build>显示电话信息插件4.01</build>
     </plugin>
+
+
 </uexplugins>

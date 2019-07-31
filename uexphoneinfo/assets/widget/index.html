@@ -1,80 +1,146 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/index.css">
 
     <script type="text/javascript">
+			var param = {
+				"status": "ok",
+				"datas": {
+					"links": [{
+						"num": "18689201539",
+						"name": "demo5",
+						"positioninfo": "职员",
+						"companyinfo": "深航",
+						"officePhone": "",
+						"field3": ""
+					}, {
+						"num": "15321375192",
+						"name": "李伟I",
+						"positioninfo": "职员",
+						"messageinfo": "地面服务部",
+						"companyinfo": "深航",
+						"officePhone": "",
+						"field3": ""
+					}, {
+						"num": "13428671111",
+						"name": "陈桂平",
+						"positioninfo": "yuangong",
+						"messageinfo": "行李服务室",
+						"companyinfo": "深航",
+						"officePhone": "",
+						"field3": ""
+					}, {
+						"num": "11111111111",
+						"name": "赵小刚",
+						"positioninfo": "职员",
+						"messageinfo": "洗衣房",
+						"companyinfo": "深航",
+						"officePhone": "",
+						"field3": ""
+					}, {
+						"num": "11111111111",
+						"name": "刘丰凯",
+						"positioninfo": "职员",
+						"messageinfo": "食堂管理室",
+						"companyinfo": "深航",
+						"officePhone": "",
+						"field3": ""
+					}, {
+						"num": "11111111111",
+						"name": "余宝坚",
+						"positioninfo": "职员",
+						"messageinfo": "特种车队",
+						"companyinfo": "深航",
+						"officePhone": "",
+						"field3": ""
+					}, {
+						"num": "13510351111",
+						"name": "胡丹",
+						"positioninfo": "职员",
+						"messageinfo": "核算中心",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}, {
+						"num": "18637121111",
+						"name": "朱乐",
+						"positioninfo": "职员",
+						"messageinfo": "运力网络室",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}, {
+						"num": "13840411111",
+						"name": "宫明明",
+						"positioninfo": "机务",
+						"messageinfo": "维修部",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}, {
+						"num": "11111111111",
+						"name": "廖熙凯",
+						"positioninfo": "搬运",
+						"messageinfo": "装卸队",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}, {
+						"num": "18207551111",
+						"name": "吴同建",
+						"positioninfo": "职员",
+						"messageinfo": "深圳现场运行指挥室",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}, {
+						"num": "13648881111",
+						"name": "杨美意",
+						"positioninfo": "职员",
+						"messageinfo": "配餐室",
+						"companyinfo": "深航",
+						"officePhone": "0871-67083622",
+						"field3": "680142"
+					}, {
+						"num": "11111111111",
+						"name": "舒慧兵",
+						"positioninfo": "职员",
+						"messageinfo": "地面服务部",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}, {
+						"num": "5464612312",
+						"name": "祁丹",
+						"positioninfo": "职员",
+						"messageinfo": "办公室",
+						"companyinfo": "深航",
+						"officePhone": "0371-11111111",
+						"field3": "00000"
+					}]
+				}
+			};
 
-        var param={
-	"status": "ok",
-	"datas": {
-		"links": [{
-				"num": "13269479405",
-				"name": "徐露雪",
-				"positioninfo": "总经理",
-				"messageinfo": "总经理室",
-				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"123456",
-				"field3":"1234"
-			},
-			{
-				"num": "15321375192",
-				"name": "张一博",
-				"positioninfo": "科长",
-				"messageinfo": "卷包车间",
-				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"654321",
-				"field3":"6543"
-			},
-			{
-				"num": "13022675245",
-				"name": "邬莉萍",
-				"positioninfo": "科长",
-				"messageinfo": "卷包车间",
-				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"7777",
-				"field3":"6666"
-			},
-			{
-				"num": "18810094832",
-				"name": "钱芸",
-				"positioninfo": "科长",
-				"messageinfo": "卷包车间",
-				"companyinfo": "浙江中烟工业有限责任公司",
-				"officePhone":"888",
-				"field3":"99999"
+			function initSDK() {
+				alert(2222222222222);
+				uexCallKit.initPhoneData(JSON.stringify(param.datas));
 			}
-		]
-	}
-};
 
+			function Jump() {
+				alert(1111111111111111111);
+				uexCallKit.checkDataCache(function(isData, isPermission) {
+					alert(isData + "==========权限" + isPermission);
+					if(!isPermission) {
+						uexCallKit.openPermissionDialog();
 
-	 uexCallKit.initPhoneData(JSON.stringify(param));
-	}
-    function initSDK(){
-    uexCallKit.initPhoneData(JSON.stringify(param.datas));
-    }
-
-
-    function Jump(){
-        uexCallKit.checkDataCache(function(isData,isPermission){
-        alert(isData+"==========权限"+isPermission);
-        if(!isPermission){
-            uexCallKit.openPermissionDialog();
-
-        }
-        });
-    }
-
-
-
-
-
-
-    </script>
+					}
+				});
+			}
+		</script>
 </head>
 
 <body>
@@ -82,17 +148,16 @@
 <div class="conbor">
     <div class="consj">
         <span>初始化接口</span>
-        <input class="btn" type="button" value="initSDK"
-               onclick="initSDK()"><br>
+        <input class="btn" type="button" value="initSDK" onclick="initSDK()"><br>
 
     </div>
     <div class="consj">
         <span>调试</span>
-        <input class="btn" type="button" value="调试"
-               onclick="Jump()"><br>
+        <input class="btn" type="button" value="调试" onclick="Jump()"><br>
 
     </div>
 </div>
 </div>
 </body>
+
 </html>
